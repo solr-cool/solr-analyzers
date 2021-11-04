@@ -8,24 +8,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        jdk: [ 8, 11, 12, 13, 14 ]
+        jdk: [ 11, 17 ]
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
 
-    - name: Cache maven deps
-      uses: actions/cache@v2
-      with:
-        path: ~/.m2/repository
-        key: maven-${{ matrix.jdk }}-${{ hashFiles('**/pom.xml') }}
-
     - name: Select JDK
       uses: actions/setup-java@v2
       with:
         java-version: ${{ matrix.jdk }}
-        distribution: adopt
+        distribution: temurin
+        cache: maven
 
     # Run all the way to the install goal to have artifacts
     # in the local maven repo. we need them for later dependency
