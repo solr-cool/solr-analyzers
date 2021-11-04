@@ -20,15 +20,15 @@ import com.google.common.io.CharStreams;
  * Tokenizer which splits the input into sentences and emits only those sentences that do not contain too many
  * stopwords. Sentences that contain many commas are split into their comma-separated parts and analyzed per part. If
  * the input contains only a single sentence, it is always emitted.
- * 
+ *
  * @author Shopping24 GmbH
  */
 public class AnalyzingSentenceTokenizer extends Tokenizer {
 
    // determine sentences
    private static final Pattern SENTENCE_PATTERN = Pattern.compile("(?<=[.?!\\|;-])\\s+(?=\\p{Lu})");
-   private static final Splitter SPACE_SPLITTER = Splitter.on(CharMatcher.WHITESPACE).trimResults();
-   private static final CharMatcher SENTENCE_NOISE = CharMatcher.DIGIT.or(
+   private static final Splitter SPACE_SPLITTER = Splitter.on(CharMatcher.whitespace()).trimResults();
+   private static final CharMatcher SENTENCE_NOISE = CharMatcher.digit().or(
          CharMatcher.anyOf(",;.:$!?%&/<>™®\\-–'\"|"));
    private static final Pattern COMMA_PATTERN = Pattern.compile("(,+(?=\\D))|((?<=\\D),+)|;");
    private static final Pattern WHITESPACE_PATTERN = Pattern.compile("\\s+");
@@ -53,7 +53,7 @@ public class AnalyzingSentenceTokenizer extends Tokenizer {
 
    /**
     * Construct a token stream processing the given input using the given AttributeFactory.
-    * 
+    *
     * @param factory
     *           the factory.
     * @param removeBadSentences
@@ -86,7 +86,7 @@ public class AnalyzingSentenceTokenizer extends Tokenizer {
 
    /**
     * {@inheritDoc}
-    * 
+    *
     * Sets the final offset, does not reset internal state.
     */
    @Override
@@ -100,7 +100,7 @@ public class AnalyzingSentenceTokenizer extends Tokenizer {
 
    /**
     * {@inheritDoc}
-    * 
+    *
     * Method is called after the input has been set. This should reset all internal state and adjust to the new input.
     */
    @Override
@@ -122,7 +122,7 @@ public class AnalyzingSentenceTokenizer extends Tokenizer {
 
    /**
     * {@inheritDoc}
-    * 
+    *
     * @return <code>true</code> to indicate to the caller to read the current attribute state and <code>false</code> to
     *         indicate the end of the token stream.
     */
@@ -144,7 +144,7 @@ public class AnalyzingSentenceTokenizer extends Tokenizer {
    }
 
    /**
-    * 
+    *
     * @return <code>true</code> if the current attribute state should be emitted
     */
    protected boolean incrementTokenInternal() throws IOException {
@@ -172,7 +172,7 @@ public class AnalyzingSentenceTokenizer extends Tokenizer {
          while (commaMatcher.find()) {
             commaCount++;
          }
-         float commaToWordRatio = commaCount / (float) (CharMatcher.WHITESPACE.countIn(sentence) - 1);
+         float commaToWordRatio = commaCount / (float) (CharMatcher.whitespace().countIn(sentence) - 1);
 
          // comma to word ratio does not exceed threshold
          if (commaToWordRatio > commaWordThreshold || lastSentenceFromCommaSplit) {
@@ -206,7 +206,7 @@ public class AnalyzingSentenceTokenizer extends Tokenizer {
 
    /**
     * Returns true if the sentence has a high quality.
-    * 
+    *
     * @param sentence
     *           the sentence.
     */
@@ -222,7 +222,7 @@ public class AnalyzingSentenceTokenizer extends Tokenizer {
 
    /**
     * Emits the given sentence as a token.
-    * 
+    *
     * @param sentence
     *           Sentence to emit.
     */
@@ -237,14 +237,14 @@ public class AnalyzingSentenceTokenizer extends Tokenizer {
    /**
     * Analyzes the sentence for stopwords appearances. It will remove whitespaces and symbols from the sentence to
     * guarantee a high stopwords match.
-    * 
+    *
     * @param sentence
     *           Sentence to analyze.
     */
    private SentenceStatistics analyzeSentence(CharSequence sentence) {
       // remove noise: trim, noise(|<>:;...), multiple whitespace and to lower
       String cleanSentence = WHITESPACE_PATTERN.matcher(SENTENCE_NOISE.removeFrom(
-            CharMatcher.WHITESPACE.trimFrom(sentence))).replaceAll(" ")
+            CharMatcher.whitespace().trimFrom(sentence))).replaceAll(" ")
             .toLowerCase(Locale.GERMAN);
 
       // split sentence into words
