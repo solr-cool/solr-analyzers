@@ -61,7 +61,7 @@
         <junit.version>4.13.2</junit.version>
         <mockito.version>3.12.4</mockito.version>
         <solr.version>8.11.1</solr.version>
-        <spring.version>5.3.21</spring.version>
+        <spring.version>6.0.3</spring.version>
     </properties>
 
     <build>
